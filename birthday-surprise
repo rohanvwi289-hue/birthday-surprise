@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday My Love</title>
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ff758f;
+            --background: #fff0f3;
+            --text: #590d22;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        /* Sections Styling */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background-color: var(--secondary);
+        }
+
+        /* --- STAGE 1: Floating Heart Minigame --- */
+        #game-heart {
+            font-size: 3.5rem;
+            position: absolute;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* --- STAGE 2: Gift Box --- */
+        .gift-container {
+            font-size: 6rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: wobble 2s infinite;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
+        }
+
+        .gift-message {
+            margin-top: 20px;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- STAGE 3: Candle --- */
+        .candle-container {
+            position: relative;
+            width: 60px;
+            height: 140px;
+            background: #ffb3c1;
+            border-radius: 10px 10px 4px 4px;
+            margin: 40px auto;
+        }
+
+        .flame {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 40px;
+            background: orange;
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 20px orange;
+            animation: flicker 0.1s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.08) rotate(2deg); }
+        }
+
+        /* Floating background elements */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 117, 143, 0.2);
+            font-size: 1.5rem;
+            animation: floatUp 6s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <section id="stage-welcome">
+        <h1>Hey Beautiful ✨</h1>
+        <p>Today is not just another day. It is the day my favorite person came into this world. I have a tiny surprise built just for you.</p>
+        <button class="btn" onclick="nextStage('welcome', 'game')">Open Your Surprise 💝</button>
+    </section>
+
+    <section id="stage-game" class="hidden">
+        <h1>First, catch my heart! </h1>
+        <p>Click the floating heart 5 times to unlock your birthday wishes.</p>
+        <h3 id="score-board" style="margin-bottom: 20px;">Caught: 0/5</h3>
+        <div id="game-heart" onclick="catchHeart()">💖</div>
+    </section>
+
+    <section id="stage-gift" class="hidden">
+        <h1>A Gift For You 🎁</h1>
+        <p>Tap the gift box gently to see what's inside.</p>
+        <div class="gift-container" id="gift-box" onclick="openGift()">🎁</div>
+        <p class="gift-message" id="gift-msg">Inside this gift is my love, my prayers, and my forever smile for you. 🥺❤️</p>
+        <button class="btn hidden" id="gift-next-btn" onclick="nextStage('gift', 'candle')" style="margin-top: 20px;">Continue ✨</button>
+    </section>
+
+    <section id="stage-candle" class="hidden">
+        <h1>Make a Wish 🎂</h1>
+        <p>Click the candle flame to blow it out and see your final message!</p>
+        <div class="candle-container">
+            <div class="flame" id="candle-flame" onclick="blowCandle()"></div>
+        </div>
+        <button class="btn hidden" id="candle-next-btn" onclick="nextStage('candle', 'final')">See Final Message 🕯️</button>
+    </section>
+
+    <section id="stage-final" class="hidden">
+        <h1>Happy Birthday My Love 🎂❤️</h1>
+        <p style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            On your special day, I just want to say that you are one of the most beautiful blessings in my life. Your smile makes my world softer, your presence makes my heart peaceful, and your love makes every day feel special.<br><br>
+            May you be blessed with endless happiness, health, success, love, and every dream your heart silently prays for. I am so lucky to have you. ❤️
+        </p>
+        <button class="btn" onclick="restartMagic()">Replay Magic ✨</button>
+    </section>
+
+    <script>
+        let heartClicks = 0;
+
+        // Stage Navigator Function
+        function nextStage(current, next) {
+            document.getElementById(`stage-${current}`).classList.add('hidden');
+            document.getElementById(`stage-${next}`).classList.remove('hidden');
+            
+            // Special trigger when moving to game stage to position the heart safely
+            if(next === 'game') {
+                moveHeart();
+            }
+        }
+
+        // Stage 1: Game logic
+        function moveHeart() {
+            const heart = document.getElementById('game-heart');
+            // Randomize position within safe screen margins
+            const x = Math.random() * (window.innerWidth - 100) + 10;
+            const y = Math.random() * (window.innerHeight - 150) + 100;
+            
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+        }
+
+        function catchHeart() {
+            heartClicks++;
+            document.getElementById('score-board').innerText = `Caught: ${heartClicks}/5`;
+            
+            if (heartClicks >= 5) {
+                setTimeout(() => {
+                    nextStage('game', 'gift');
+                }, 400);
+            } else {
+                moveHeart();
+            }
+        }
+
+        // Stage 2: Gift box logic
+        function openGift() {
+            const gift = document.getElementById('gift-box');
+            gift.innerText = "🔓📦";
+            gift.style.animation = "none";
+            document.getElementById('gift-msg').style.opacity = "1";
+            document.getElementById('gift-next-btn').classList.remove('hidden');
+        }
+
+        // Stage 3: Candle logic
+        function blowCandle() {
+            const flame = document.getElementById('candle-flame');
+            flame.style.display = 'none'; // Snuff out flame
+            document.getElementById('candle-next-btn').classList.remove('hidden');
+        }
+
+        // Restart feature
+        function restartMagic() {
+            heartClicks = 0;
+            document.getElementById('score-board').innerText = `Caught: 0/5`;
+            document.getElementById('gift-box').innerText = "🎁";
+            document.getElementById('gift-box').style.animation = "wobble 2s infinite";
+            document.getElementById('gift-msg').style.opacity = "0";
+            document.getElementById('candle-flame').style.display = 'block';
+            document.getElementById('gift-next-btn').classList.add('hidden');
+            document.getElementById('candle-next-btn').classList.add('hidden');
+            
+            nextStage('final', 'welcome');
+        }
+
+        // Decorative background floating hearts generator
+        function createBackgroundHearts() {
+            const symbols = ['❤️', '💖', '🌸', '✨'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('bg-heart');
+                heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 4) + 's'; 
+                heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+                document.body.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 7000);
+            }, 600);
+        }
+
+        createBackgroundHearts();
+    </script>
+</body>
+</html>
